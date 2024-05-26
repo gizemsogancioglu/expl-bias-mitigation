@@ -97,7 +97,7 @@ def ours_(fold, folder, method=''):
         for split in ['test']:
             read = test_type
             df[split] = pd.read_csv(
-                folder + "bias_iterative_analysis_" + read + "-" + split + "_hybrid" + f"_{fold}.csv")
+                folder + "bias_iterative_analysis_" + read + "-" + split + "_" + f"_{fold}.csv")
             df[split] = df[split][(df[split]['exp'] == 'shap-gender') & (df[split]['method'] == 'feat-disabling')
                                   & (df[split]['i'] != 0)]
 
@@ -138,11 +138,11 @@ def ours_(fold, folder, method=''):
 
         df_all = pd.DataFrame.from_dict(dict_m)
         df_all.index = ['EA', 'MAE', 'PCC', 'i', 'method', 'exp']
-        df_all.to_csv(folder + "ours_{type}_{method}_hybrid.csv".format(type=test_type, method=method))
+        df_all.to_csv(folder + "ours_{type}_{method}.csv".format(type=test_type, method=method))
     return dict_m
 
 
-def iterative_analysis_(file, profiles, labels, blind_labels, final_file_name):
+def iterative_analysis_(file, profiles, train_labels, test_labels, final_file_name):
     attr = 'gender'
     random_arr = pd.read_csv("../faircvtest/random_arr")[
         attr]
@@ -157,7 +157,7 @@ def iterative_analysis_(file, profiles, labels, blind_labels, final_file_name):
     for del_, arr in [["shap-gender", df['index']], ["corr", corr_arr], ["random", random_arr]]:
         for method in ['feat-disabling']:
             test_preds, regressor = blackbox_regressor(get_features(profiles['train']), get_features(profiles['test']),
-                                                       labels['train'], labels['test'])
+                                                       train_labels, test_labels)
 
             for i in range(int(len(arr) - 1)):
                 del_val = list(arr[0:i])
@@ -170,10 +170,10 @@ def iterative_analysis_(file, profiles, labels, blind_labels, final_file_name):
                     test_data = remove_given_indices(get_features(profiles['test']), del_val)
                     test_preds, regressor = blackbox_regressor(train_data,
                                                                test_data,
-                                                               labels['train'],
-                                                               labels['test'])
+                                                               train_labels,
+                                                               test_labels)
 
-                PCC, EAD, MAE = test_bias(get_gender(profiles['test']), test_preds, blind_labels['test'])
+                PCC, EAD, MAE = test_bias(get_gender(profiles['test']), test_preds, test_labels)
                 for str, val in [['EA', EAD], ['MAE', MAE], ['PCC', PCC], ['i', i], ['method', method], ['exp', del_]]:
                     arr_sub[str].append(val)
 
