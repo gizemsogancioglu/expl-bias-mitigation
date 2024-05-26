@@ -1,4 +1,7 @@
 # Using Explainability for Bias Mitigation: A Case Study for Fair Recruitment Assessment
+[![Size](https://img.shields.io/github/repo-size/gizemsogancioglu/expl-bias-mitigation)](https://img.shields.io/github/repo-size/gizemsogancioglu/expl-bias-mitigation)
+[![License](https://img.shields.io/github/license/gizemsogancioglu/expl-bias-mitigation)](https://img.shields.io/github/license/gizemsogancioglu/expl-bias-mitigation)
+
 Here, we provide source code to ensure reproducibility for the following paper: [Using Explainability for Bias Mitigation: A Case Study for Fair Recruitment Assessment, Gizem Sogancioglu, Heysem Kaya, Albert Ali Salah]
 
         .
