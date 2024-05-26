@@ -51,12 +51,12 @@ def nullfy_given_indices(df, test_df, index_arr, strategy='mean'):
     return df_new, test_df_new
 
 
-def get_expl(filename, model, data):
+def get_expl(filename, model, test_features):
 
-    shap_values = shap.TreeExplainer(model).shap_values(get_features(data['test']))
+    shap_values = shap.TreeExplainer(model).shap_values(test_features)
     important_feat = pd.DataFrame(abs(shap_values).mean(0)).reset_index(drop=True)
 
-    important_feat.to_csv("../faircvtest/sex_relevant_feat_{file}.csv".format(file=filename))
+    important_feat.to_csv("../results/sex_relevant_feat_{file}.csv".format(file=filename))
 
 
 def ours_(fold, folder, method=''):
@@ -116,8 +116,8 @@ def iterative_analysis_(file, profiles, train_labels, test_labels, final_file_na
     attr = 'gender'
     arr_sub = collections.defaultdict(list)
 
-    print(f"READING FILE ../faircvtest/sex_relevant_feat_{file}.csv")
-    df = pd.read_csv("../faircvtest/sex_relevant_feat_{file}.csv".format(file=file))
+    print(f"READING FILE ../results/sex_relevant_feat_{file}.csv")
+    df = pd.read_csv("../results/sex_relevant_feat_{file}.csv".format(file=file))
     df['feat'] = get_features(profiles['test']).columns
     df['index'] = df.index
     df = df.sort_values(by=['0'], ascending=False)
@@ -145,8 +145,8 @@ def iterative_analysis_(file, profiles, train_labels, test_labels, final_file_na
                     arr_sub[str].append(val)
 
     df = pd.DataFrame().from_dict(arr_sub, orient='index').transpose()
-    df.to_csv(f"../faircvtest/bias_iterative_analysis_{final_file_name}.csv".format(final_file_name=final_file_name))
-    print(f"SAVING ITERATIVE ANALYSIS FILE TO ../faircvtest/bias_iterative_analysis_{final_file_name}.csv")
+    df.to_csv(f"../results/bias_iterative_analysis_{final_file_name}.csv".format(final_file_name=final_file_name))
+    print(f"SAVING ITERATIVE ANALYSIS FILE TO ../results/bias_iterative_analysis_{final_file_name}.csv")
     return
 
 
