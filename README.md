@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/gizemsogancioglu/expl-bias-mitigation)](https://img.shields.io/github/license/gizemsogancioglu/expl-bias-mitigation)
 ![GitHub top language](https://img.shields.io/github/languages/top/gizemsogancioglu/expl-bias-mitigation)
 
-Here, we provide source code to ensure reproducibility for the following paper: [Using Explainability for Bias Mitigation: A Case Study for Fair Recruitment Assessment, Gizem Sogancioglu, Heysem Kaya, Albert Ali Salah]
+Here, we provide the source code to ensure reproducibility for the following paper: [Sogancioglu, G., Kaya, H. and Salah, A.A., Using Explainability for Bias Mitigation: A Case Study for Fair Recruitment Assessment. In Proceedings of ICMI  2023.]
 
         .
         ├── source                              # including all source files                 
@@ -21,5 +21,5 @@ Here, we provide source code to ensure reproducibility for the following paper: 
 ![Alt text](pipeline.png?raw=true "The proposed bias mitigation pipeline (ProxyMute) using feature attribution-based explainability method.")
 
 ## References
-* Paper: [Using Explainability for Bias Mitigation: A Case Study for Fair Recruitment Assessment,Gizem Sogancioglu, Heysem Kaya, Albert Ali Salah]
+* Paper: [Sogancioglu, G., Kaya, H. and Salah, A.A., Using Explainability for Bias Mitigation: A Case Study for Fair Recruitment Assessment. In Proceedings of ICMI  2023.]
 * For more information or any problems, please contact: gizemsogancioglu@gmail.com
