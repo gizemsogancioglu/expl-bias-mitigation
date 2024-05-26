@@ -7,9 +7,9 @@ import pandas as pd
 import shap
 from matplotlib import pyplot as plt
 
-from source.bias_measures import test_bias
-from source.data_loader import get_features, get_gender
-from source.training import blackbox_regressor
+from bias_measures import test_bias
+from data_loader import get_features, get_gender
+from training import blackbox_regressor
 
 DATA_PATH = "../faircvtest/"
 
@@ -51,53 +51,23 @@ def nullfy_given_indices(df, test_df, index_arr, strategy='mean'):
     return df_new, test_df_new
 
 
-def get_expl(filename, model, data, type='reg'):
-    if type == 'reg':
-        shap_values = shap.TreeExplainer(model).shap_values(data['test'])
-        slabel = "Demographic parity difference\nof SHAP values for female vs. male"
+def get_expl(filename, model, data):
 
-        test_features = get_features(data['test'])
-        gen_arr = get_gender(data['test'])
-        b = np.where(gen_arr == 0, True, False)
-        f = shap.group_difference_plot(shap_values, b, feature_names=test_features.columns.tolist(), xmin=-0.8,
-                                       xmax=+0.8,
-                                       xlabel=slabel, show=True, max_display=10)
-        plt.savefig("{data}/shap_{file}.png".format(data=DATA_PATH, file=filename), bbox_inches='tight',
-                    pad_inches=0)
-        plt.clf()
+    shap_values = shap.TreeExplainer(model).shap_values(get_features(data['test']))
+    important_feat = pd.DataFrame(abs(shap_values).mean(0)).reset_index(drop=True)
 
-        diff_arr = abs((shap_values[b]).mean(0) - (shap_values[~b]).mean(0))
-        del_arr = np.argsort(diff_arr)[::-1]
-
-        random_arr = copy.deepcopy(del_arr)
-        random.shuffle(random_arr)
-
-        corr_arr = \
-            pd.concat([get_features(data['train']), pd.DataFrame(get_gender(data['train']), columns=['gender'])],
-                      axis=1).corr()["gender"]
-        corr_arr = corr_arr.drop('gender').reset_index(drop=True)
-        corr_arr = np.argsort(abs(corr_arr))[::-1]
-        for str_, method in [["corr", corr_arr]]:
-            pd.DataFrame(method).to_csv(
-                "../faircvtest/{corr}_arr".format(corr=str_),
-                index=False)
-
-    else:
-        shap_values = shap.TreeExplainer(model).shap_values(get_features(data['test']))
-        important_feat = pd.DataFrame(abs(shap_values).mean(0)).reset_index(drop=True)
-
-        important_feat.to_csv("../faircvtest/sex_relevant_feat_{file}.csv".format(file=filename))
+    important_feat.to_csv("../faircvtest/sex_relevant_feat_{file}.csv".format(file=filename))
 
 
 def ours_(fold, folder, method=''):
     # choose the model that gives the lowest score for lambda * mae on validation set.
 
     df = collections.defaultdict(list)
-    for test_type in ['blind']:
+    for test_type in ['biased']:
         for split in ['test']:
             read = test_type
             df[split] = pd.read_csv(
-                folder + "bias_iterative_analysis_" + read + "-" + split + "_" + f"_{fold}.csv")
+                folder + "bias_iterative_analysis_" + read + "-" + split  + f"_{fold}.csv")
             df[split] = df[split][(df[split]['exp'] == 'shap-gender') & (df[split]['method'] == 'feat-disabling')
                                   & (df[split]['i'] != 0)]
 
@@ -144,9 +114,6 @@ def ours_(fold, folder, method=''):
 
 def iterative_analysis_(file, profiles, train_labels, test_labels, final_file_name):
     attr = 'gender'
-    random_arr = pd.read_csv("../faircvtest/random_arr")[
-        attr]
-    corr_arr = pd.read_csv("../faircvtest/corr_arr")[attr]
     arr_sub = collections.defaultdict(list)
 
     print(f"READING FILE ../faircvtest/sex_relevant_feat_{file}.csv")
@@ -154,7 +121,7 @@ def iterative_analysis_(file, profiles, train_labels, test_labels, final_file_na
     df['feat'] = get_features(profiles['test']).columns
     df['index'] = df.index
     df = df.sort_values(by=['0'], ascending=False)
-    for del_, arr in [["shap-gender", df['index']], ["corr", corr_arr], ["random", random_arr]]:
+    for del_, arr in [["shap-gender", df['index']]]:
         for method in ['feat-disabling']:
             test_preds, regressor = blackbox_regressor(get_features(profiles['train']), get_features(profiles['test']),
                                                        train_labels, test_labels)

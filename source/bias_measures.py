@@ -5,7 +5,7 @@ import numpy as np
 from fairlearn.metrics import MetricFrame
 from scipy.stats import pearsonr
 
-from source.training import evaluate_reg_accuracy
+from training import evaluate_reg_accuracy
 
 
 def PCC_score(attr, preds):
