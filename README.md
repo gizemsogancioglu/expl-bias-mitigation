@@ -1,8 +1,5 @@
 # Using Explainability for Bias Mitigation: A Case Study for Fair Recruitment Assessment
-Here, we provide source code to ensure reproducability for the following paper: [Using Explainability for Bias Mitigation: A Case Study for Fair Recruitment Assessment,Gizem Sogancioglu, Heysem Kaya, Albert Ali Salah]
-
-- Extracted features from the videos of ChaLearn LAP-FI dataset (features/feature_[train/test/validation].csv)  
-- Scripts for mood and personality prediction (source/*.py)  
+Here, we provide source code to ensure reproducibility for the following paper: [Using Explainability for Bias Mitigation: A Case Study for Fair Recruitment Assessment, Gizem Sogancioglu, Heysem Kaya, Albert Ali Salah]
 
         .
         ├── source                              # including all source files                 
